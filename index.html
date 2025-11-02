@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>M2 Physics Question Bank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- MathJax config BEFORE script -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], processEscapes: true },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Papa Parse for CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- Fonts + Base styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#f6f7fb; --card:#ffffff; --text:#172036; --text-dim:#5b6b8a;
+      --primary:#3a7bff; --primary-strong:#2a62d9; --ring:rgba(58,123,255,.35);
+      --border:#e7eaf3; --shadow:0 10px 24px rgba(35,35,64,.08);
+      --grad-1:linear-gradient(135deg, rgba(58,123,255,.10), rgba(99,102,241,.10));
+      --grad-2:linear-gradient(135deg, #3a7bff, #6366f1); --warning:#f59e0b;
+    }
+    *{ box-sizing:border-box; } html,body{ height:100%; }
+    body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--text); }
+    .wrap{ max-width:1100px; margin:0 auto; padding:28px 18px 64px; }
+
+    .hero{ background:var(--grad-1); border:1px solid var(--border); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
+    .hero h1{ margin:0 0 6px; font-size:28px; }
+    .muted{ color:var(--text-dim); }
+
+    .bar{ margin-top:16px; display:grid; grid-template-columns:1fr; gap:12px; }
+    @media (min-width:780px){ .bar{ grid-template-columns:1.2fr 1fr; align-items:center; } }
+
+    .panel{ background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; }
+    .panel .controls{ display:flex; flex-wrap:wrap; gap:10px; }
+    label{ font-size:13px; color:var(--text-dim); }
+
+    select, input[type="number"]{
+      appearance:none; background:#fff; border:1px solid var(--border); color:var(--text);
+      padding:10px 12px; border-radius:10px; outline:none; min-width:220px;
+      transition: box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+    input[type="number"]{ width:140px; }
+    select:focus, input[type="number"]:focus{ box-shadow:0 0 0 6px var(--ring); border-color:var(--primary); }
+
+    .btn{
+      border:0; color:#fff; background:var(--grad-2); padding:10px 14px; border-radius:10px; font-weight:600;
+      letter-spacing:.15px; cursor:pointer; transition: transform .06s ease, box-shadow .2s ease, opacity .2s ease;
+      box-shadow:0 8px 20px rgba(58,123,255,.25);
+    }
+    .btn.secondary{ background:transparent; color:var(--primary); border:1px solid var(--primary); box-shadow:none; }
+    .btn.ghost{ background:transparent; color:var(--text); border:1px dashed var(--border); box-shadow:none; }
+    .toggle{ background:var(--card); border:1px solid var(--border); color:var(--text); padding:10px 12px; border-radius:10px; cursor:pointer; }
+
+    .quiz{ margin-top:18px; background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:16px; display:none; }
+    .quiz-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+    .title{ color:var(--text-dim); font-size:14px; }
+    .actions{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), transparent), var(--card);
+      border:1px solid var(--border); border-radius:12px; padding:10px 12px; margin-bottom:10px;
+      display:flex; align-items:center; gap:10px; min-height:52px;
+    }
+    .qnum{ font-size:12px; color:var(--text-dim); background:rgba(58,123,255,.10); border:1px solid rgba(58,123,255,.28); padding:3px 8px; border-radius:999px; white-space:nowrap; }
+    .qtext{ flex:1 1 auto; line-height:1.45; min-width:220px; }
+    .work{ flex:0 1 28%; min-width:180px; max-width:340px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:#fff; color:var(--text); font-family:inherit; font-size:14px; outline:none; }
+    .work:focus{ box-shadow:0 0 0 6px var(--ring); border-color:var(--primary); }
+
+    .inline-controls{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+    .answer{
+      display:none; padding:6px 8px; border-radius:8px; border:1px solid rgba(245,158,11,.35);
+      background:rgba(245,158,11,.08); color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:360px;
+    }
+    .answer-label{ font-weight:700; color:var(--warning); margin-right:6px; }
+
+    @media (max-width:860px){
+      .card{ flex-wrap:wrap; align-items:flex-start; }
+      .qtext{ flex:1 1 100%; }
+      .work{ flex:1 1 100%; max-width:none; }
+      .answer{ max-width:none; width:100%; }
+    }
+
+    .note{ background:#fffef9; border:1px solid #fcd34d; border-radius:14px; padding:18px 20px; margin-top:22px; box-shadow:0 4px 12px rgba(245,158,11,.15); margin-bottom:30px; }
+    .note h2{ margin-top:0; color:#b45309; font-size:18px; }
+    .note ul{ margin-top:6px; padding-left:20px; color:#92400e; font-size:14px; }
+    .note p{ color:#78350f; font-size:14px; line-height:1.5; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="note">
+      <h2>🛠️ Note</h2>
+      <p>
+        This Physics Question Bank is still being updated. Some answers may not be fully verified.
+        If you spot an error or have suggestions, please reach out!
+        <br><br><strong>Recent Updates:</strong>
+      </p>
+      <ul><li>✅ Added questions up till 2.2.4</li></ul>
+      <ul><li>✅ Added MCQ questions up till day 13</li></ul>
+      <ul><li>Any options with "Random" in it will follow based on your random count in the form given</li></ul>
+      <ul><li>To max out random, just see the total questions available on the right</li></ul>
+
+
+    </div>
+
+    <div class="hero">
+      <h1>📘 M2 Physics Question Bank</h1>
+      <div class="muted">Some answers may be wrong due to RP's answer sheet 🤭</div>
+
+      <div class="bar">
+        <div class="panel">
+          <div class="controls">
+            <div>
+              <label for="topic">Topic</label><br />
+              <select id="topic"><option value="">-- Choose a Topic --</option></select>
+            </div>
+            <div>
+              <label for="numQuestions">Random Count</label><br />
+              <input type="number" id="numQuestions" min="1" value="10" />
+            </div>
+            <div>
+              <label for="daySelect">Quiz Day</label><br />
+              <select id="daySelect"><option value="">-- Choose a Day --</option></select>
+            </div>
+          </div>
+
+          <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1">
+            <button id="themeToggle" class="toggle" title="Toggle Theme">❌ Do not click</button>
+          </a>
+        </div>
+
+        <div class="panel">
+          <div class="actions">
+            <button id="byTopicBtn" class="btn">1) Select by Topic</button>
+            <button id="randomBtn" class="btn">2) Random Questions</button>
+            <button id="allBtn" class="btn secondary">3) Book in order</button>
+            <button id="allRandomBtn" class="btn secondary">4) Book (Randomized)</button>
+            <button id="startDayBtn" class="btn">5) Day Quiz</button>
+            <button id="randomDayBtn" class="btn">6) Random Quiz</button>
+          </div>
+          <div id="totalCount" class="muted" style="text-align:right;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="quiz" class="quiz">
+      <div class="quiz-header">
+        <div id="quizTitle" class="title"></div>
+        <div class="actions">
+          <button id="showAllAns" class="btn ghost">Show All Answers</button>
+          <button id="hideAllAns" class="btn ghost">Hide All Answers</button>
+          <button id="backBtn" class="toggle">← Back</button>
+        </div>
+      </div>
+      <div id="questions"></div>
+      <div class="muted" style="margin-top:12px;">Tip: MathJax renders automatically after showing answers.</div>
+    </div>
+  </div>
+
+  <!-- Optional built-in bank -->
+  <script src="questions_and_answers.js"></script>
+
+  <script>
+    // ===== Utilities =====
+    const norm = s => String(s ?? '').trim();
+    function typeset(elList){
+      if(window.MathJax?.typesetPromise){
+        MathJax.typesetPromise(elList ? (Array.isArray(elList)?elList:[elList]) : undefined).catch(console.error);
+      }
+    }
+    function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+    // ===== DOM refs =====
+    const topicSelect   = document.getElementById('topic');
+    const numInput      = document.getElementById('numQuestions');
+    const byTopicBtn    = document.getElementById('byTopicBtn');
+    const randomBtn     = document.getElementById('randomBtn');
+    const allBtn        = document.getElementById('allBtn');
+    const backBtn       = document.getElementById('backBtn');
+    const showAllAnsBtn = document.getElementById('showAllAns');
+    const hideAllAnsBtn = document.getElementById('hideAllAns');
+    const totalCountEl  = document.getElementById('totalCount');
+    const allRandomBtn  = document.getElementById('allRandomBtn');
+
+    const daySelect     = document.getElementById('daySelect');
+    const startDayBtn   = document.getElementById('startDayBtn');
+    const randomDayBtn  = document.getElementById('randomDayBtn');
+
+    const quizEl        = document.getElementById('quiz');
+    const quizTitle     = document.getElementById('quizTitle');
+    const questionsEl   = document.getElementById('questions');
+    const menuHero      = document.querySelector('.hero');
+
+    // ===== Built-in QUESTION_BANK helpers =====
+    function allQuestions(){ return typeof QUESTION_BANK === 'object' ? Object.values(QUESTION_BANK).flat() : []; }
+    function populateTopics(){
+      if (typeof QUESTION_BANK === 'object') {
+        Object.keys(QUESTION_BANK).forEach(topic=>{
+          const opt=document.createElement('option'); opt.value=topic; opt.textContent=topic; topicSelect.appendChild(opt);
+        });
+      }
+      const all=allQuestions();
+      totalCountEl.innerHTML = `
+        <div style="margin-bottom:4px;">📘 Total book questions: ${all.length}</div>
+        <div>🧩 Total MCQ questions: 220</div>
+      `;
+
+
+      numInput.max = Math.max(1, all.length || 1);
+      if (!numInput.value || Number(numInput.value) < 1) numInput.value = Math.min(10, numInput.max);
+    }
+
+    // ===== Free-text card =====
+    function createCard(qObj, idx){
+      const card=document.createElement('div'); card.className='card';
+      const badge=document.createElement('div'); badge.className='qnum'; badge.textContent=`Q${idx+1}`;
+      const qtext=document.createElement('div'); qtext.className='qtext'; qtext.innerHTML=qObj.q;
+      const work=document.createElement('input'); work.className='work'; work.type='text'; work.placeholder='Your answer / working';
+
+      const controls=document.createElement('div'); controls.className='inline-controls';
+      const toggleBtn=document.createElement('button'); toggleBtn.className='btn secondary'; toggleBtn.type='button'; toggleBtn.textContent='Reveal';
+
+      const ans=document.createElement('div'); ans.className='answer';
+      const hasAnswer=(qObj.a && norm(qObj.a).length>0);
+      ans.innerHTML=`<span class="answer-label">Answer:</span> ${hasAnswer ? qObj.a : '<em>No answer</em>'}`;
+
+      toggleBtn.addEventListener('click',()=>{
+        const show = ans.style.display!=='block';
+        ans.style.display = show?'block':'none';
+        toggleBtn.textContent = show?'Hide':'Reveal';
+        if (show) typeset(ans);
+      });
+
+      controls.append(toggleBtn, ans);
+      card.append(badge, qtext, work, controls);
+      return card;
+    }
+
+    // ===== MCQ card =====
+    function createMCQCard(item, idx){
+      const card=document.createElement('div'); card.className='card';
+      const badge=document.createElement('div'); badge.className='qnum'; badge.textContent=`Q${idx+1}`;
+      const qtext=document.createElement('div'); qtext.className='qtext'; qtext.innerHTML=item.q;
+
+      const optsWrap=document.createElement('div');
+      Object.assign(optsWrap.style,{display:'flex',flexDirection:'column',gap:'6px',flex:'0 1 28%',minWidth:'180px',maxWidth:'340px'});
+
+      const name=`mcq_${Date.now()}_${idx}`;
+      item.options.forEach(o=>{
+        const lab=document.createElement('label'); Object.assign(lab.style,{display:'flex',alignItems:'center',gap:'8px'});
+        const rb=document.createElement('input'); rb.type='radio'; rb.name=name; rb.value=o.orig; // original option index (0..3)
+        const span=document.createElement('span'); span.innerHTML=o.text;
+        lab.append(rb, span); optsWrap.appendChild(lab);
+      });
+
+      const controls=document.createElement('div'); controls.className='inline-controls';
+      const checkBtn=document.createElement('button'); checkBtn.className='btn secondary'; checkBtn.type='button'; checkBtn.textContent='Check';
+
+      const ans=document.createElement('div'); ans.className='answer';
+      ans.innerHTML=`<span class="answer-label">Answer:</span> ${item.a || '(none)'}`;
+
+      checkBtn.addEventListener('click',()=>{
+        const picked = card.querySelector(`input[name="${name}"]:checked`);
+        if(!picked){ alert('Choose an option.'); return; }
+        const pickedOrigIdx = Number(picked.value);
+        const isCorrect = pickedOrigIdx === item.correctOrigIndex;
+
+        checkBtn.textContent = isCorrect ? '✓ Correct' : '✗ Try again';
+        checkBtn.style.borderColor = isCorrect ? '#10b981' : '#ef4444';
+        checkBtn.style.color = isCorrect ? '#10b981' : '#ef4444';
+
+        ans.style.display = isCorrect ? 'none' : 'block';
+        if(!isCorrect) typeset(ans);
+      });
+
+      controls.append(checkBtn, ans);
+      card.append(badge, qtext, optsWrap, controls);
+      return card;
+    }
+
+    // ===== Render =====
+    function render(list, titleText){
+      questionsEl.innerHTML=''; quizTitle.textContent = titleText || '';
+      list.forEach((qObj, idx)=>{
+        const el = (Array.isArray(qObj.options) && qObj.options.length)
+          ? createMCQCard(qObj, idx)
+          : createCard(qObj, idx);
+        questionsEl.appendChild(el);
+      });
+      menuHero.style.display='none'; quizEl.style.display='block'; typeset([questionsEl,quizTitle]);
+    }
+
+    // ===== Old flows =====
+    function showByTopic(){
+      const topic=topicSelect.value; if(!topic){ alert('Please choose a topic first.'); return; }
+      const list = (QUESTION_BANK?.[topic]) || []; render(list, `Topic — ${topic} (${list.length})`);
+    }
+    function showRandomN(){
+      const list = allQuestions(); if(!list.length){ alert('No built-in questions found.'); return; }
+      let n = parseInt(numInput.value,10); if(isNaN(n)||n<1) n=1; if(n>list.length) n=list.length;
+      const arr = shuffle(list); render(arr.slice(0,n), `Random — ${n} question(s)`);
+    }
+    function showAll(){ const list=allQuestions(); render(list, `All Questions (${list.length})`); }
+    function showAllRandom(){ const list=shuffle(allQuestions()); render(list, `All Questions (${list.length}) — randomized`); }
+    function goBack(){ quizEl.style.display='none'; menuHero.style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }
+    function showAllAnswers(){ document.querySelectorAll('.answer').forEach(el=>el.style.display='block'); typeset(document.querySelectorAll('.answer')); }
+    function hideAllAnswers(){ document.querySelectorAll('.answer').forEach(el=>el.style.display='none'); }
+
+    // ===== Day CSV mapping (from your /data folder) =====
+    const DAY_FILES = {
+      "Day 1":  "data/AY25_ACAM_M2_Day_1_PQ.csv",
+      "Day 2":  "data/AY25_ACAM_M2_Day_2_PQ.csv",
+      "Day 3":  "data/AY25_ACAM_M2_Day_3_PQ.csv",
+      "Day 4":  "data/AY25_ACAM_M2_Day_4_PQ.csv",
+      "Day 6":  "data/AY25_ACAM_M2_Day_6_PQ.csv",
+      "Day 8":  "data/AY25_ACAM_M2_Day_8_PQ.csv",
+      "Day 9":  "data/AY25_ACAM_M2_Day_9_PQ.csv",
+      "Day 10": "data/AY25_ACAM_M2_Day_10_PQ.csv",
+      "Day 11": "data/AY25_ACAM_M2_Day_11_PQ.csv",
+      "Day 12": "data/AY25_ACAM_M2_Day_12_PQ.csv",
+      "Day 13": "data/AY25_ACAM_M2_Day_13_PQ.csv"
+    };
+
+    function populateDays(){
+      const sel = daySelect;
+      // clear existing (keep placeholder)
+      [...sel.options].slice(1).forEach(o => o.remove());
+      Object.keys(DAY_FILES).forEach(label=>{
+        const opt=document.createElement('option'); opt.value=label; opt.textContent=label; sel.appendChild(opt);
+      });
+    }
+
+    // ===== Day CSV loader (supports Correct: A–D, 1–4, or exact text) =====
+    async function loadDayCsv(dayLabel){
+      const file = DAY_FILES[dayLabel];
+      if (!file) throw new Error('No CSV file mapped for ' + dayLabel);
+
+      const res = await fetch(file, { cache:"no-store" });
+      if (!res.ok) throw new Error('Failed to fetch ' + file);
+      const text = await res.text();
+
+      const parsed = Papa.parse(text, { header:true, skipEmptyLines:true });
+
+      const items = parsed.data.map((row, i) => {
+        const raw = [
+          row['Option 1'] ?? '',
+          row['Option 2'] ?? '',
+          row['Option 3'] ?? '',
+          row['Option 4'] ?? '',
+        ];
+
+        let c = norm(row['Correct']);
+        if (/^[A-Da-d]$/.test(c)) c = (c.toUpperCase().charCodeAt(0)-65+1).toString();
+        let correctOrigIdx = parseInt(c,10);
+        if (!(correctOrigIdx>=1 && correctOrigIdx<=4)) {
+          const ci = raw.findIndex(opt => norm(opt) && norm(opt) === norm(row['Correct']));
+          correctOrigIdx = (ci>=0 ? ci+1 : 1);
+        }
+        const correct0   = correctOrigIdx - 1;
+        const correctTxt = norm(raw[correct0]);
+
+        const options = raw.map((t, idx) => ({ text:norm(t), orig:idx })).filter(o => o.text.length>0);
+
+        return {
+          q: row['Question'] ?? `Question ${i+1}`,
+          options,
+          correctOrigIndex: correct0,
+          correctText: correctTxt,
+          a: correctTxt
+        };
+      });
+
+      return { title: `${dayLabel} — ${items.length} MCQs`, items };
+    }
+
+    // ===== Random Day Quiz (combines all CSVs, picks N) =====
+    async function loadAllDayItems(){
+      const labels = Object.keys(DAY_FILES);
+      const results = await Promise.all(
+        labels.map(lbl => loadDayCsv(lbl).catch(() => ({ title: lbl, items: [] })))
+      );
+      const totalItems = results.flatMap(r => r.items || []);
+      return { labels, items: totalItems };
+    }
+
+    async function startRandomDayQuiz(){
+      let n = parseInt(numInput.value, 10);
+      if (isNaN(n) || n < 1) n = 1;
+
+      randomDayBtn.disabled = true; const oldTxt = randomDayBtn.textContent;
+      randomDayBtn.textContent = 'Loading…';
+      try{
+        const { labels, items } = await loadAllDayItems();
+        if (!items.length){ alert('No questions found across your Day CSVs.'); return; }
+        if (n > items.length) n = items.length;
+        const picked = shuffle(items).slice(0, n);
+        render(picked, `Random Day Quiz — ${n}/${items.length} from ${labels.length} day(s)`);
+      } finally {
+        randomDayBtn.disabled = false; randomDayBtn.textContent = oldTxt;
+      }
+    }
+
+    // ===== Wire up =====
+    byTopicBtn.addEventListener('click', showByTopic);
+    randomBtn.addEventListener('click', showRandomN);
+    allBtn.addEventListener('click', showAll);
+    allRandomBtn.addEventListener('click', showAllRandom);
+
+    backBtn.addEventListener('click', goBack);
+    showAllAnsBtn.addEventListener('click', showAllAnswers);
+    hideAllAnsBtn.addEventListener('click', hideAllAnswers);
+
+    startDayBtn.addEventListener('click', async () => {
+      const dayLabel = daySelect.value;
+      if (!dayLabel) { alert('Choose a Day first.'); return; }
+      try {
+        const { title, items } = await loadDayCsv(dayLabel);
+        render(items, `Quiz — ${title}`);
+      } catch (e) {
+        console.error(e);
+        alert('Could not load CSV. Check file path and headers (Question, Option 1..4, Correct).');
+      }
+    });
+
+    randomDayBtn.addEventListener('click', startRandomDayQuiz);
+
+    // ===== Init =====
+    populateTopics();
+    populateDays(); // auto-fill Day dropdown from DAY_FILES
+  </script>
+</body>
+</html>

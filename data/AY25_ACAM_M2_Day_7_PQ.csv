@@ -1,0 +1,21 @@
+Question,Option 1,Option 2,Option 3,Correct
+What is the unit for acceleration?,ft/sec²,ft/sec,ft²/sec²,ft/sec²
+What is the value of gravitational acceleration close to the Earth's surface?,9.8 m/sec²,32 ft/sec²,Both A and B,Both A and B
+A body falls freely for 3 seconds. What is its final speed?,96 ft/sec,144 ft/sec,48 ft/sec,96 ft/sec
+How far does a body fall freely in 3 seconds?,96 ft,144 ft,324 ft,144 ft
+What is the terminal velocity of a falling object?,The maximum speed during free fall,The speed after 8 seconds of free fall,The constant speed when drag force equals gravitational force,The constant speed when drag force equals gravitational force
+What happens to the angular velocity when a disc starts rotating?,It decreases,It remains constant,It increases,It increases
+Which force is directed toward the center of a circular path?,Centrifugal force,Tangential force,Centripetal force,Centripetal force
+A pendulum's period is dependent on which factors?,Length and mass,Length and gravitational acceleration,Mass and gravitational acceleration,Length and gravitational acceleration
+"In simple harmonic motion, what shape does the displacement vs time graph take?",Parabolic,Linear,Sinusoidal,Sinusoidal
+What does the symbol 'g' represent in the formula for the time period of a pendulum?,Acceleration due to gravity,Gravitational constant,Length of the pendulum,Acceleration due to gravity
+What is the equation for tangential acceleration in terms of angular acceleration?,𝑎𝑡 = Rα,𝑎𝑡 = R²α,𝑎𝑡= α²R,𝑎𝑡 = Rα
+How is arc length related to angular displacement and radius?,s = Rθ,s = θ/R,s = θ²R,s = Rθ
+"In a rotating system, what is the unit of angular displacement?",Radians,Degrees,Revolutions per second,Radians
+What is the equation for angular displacement?,θ = ωt,θ = v²/R,θ = at,θ = ωt
+What is the formula for tangential velocity in circular motion?,v = Rω,v = ω²/R,v = R²ω,v = Rω
+"In circular motion, how is centripetal acceleration calculated?",𝑎𝑐 = v²/R,𝑎𝑐 = R/v,𝑎𝑐 = ωt,𝑎𝑐 = v²/R
+"If a body starts from rest and accelerates uniformly at 6 m/sec² for 8 seconds, what is the distance traveled?",96 m,144 m,192 m,192 m
+How is the period of a mass-spring system affected if the mass is doubled?,It remains the same.,It is halved.,It increases,It increases
+"If a rotating disk has an initial angular velocity of 100 rad/sec and decelerates at 10 rad/sec² for 5 seconds, what is its final angular velocity?",0 rad/sec,50 rad/sec,75 rad/sec,50 rad/sec
+"If a pendulum has a period of 4 seconds, what is its frequency?",0.25 Hz,0.5 Hz,1 Hz,0.25 Hz
