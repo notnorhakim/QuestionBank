@@ -103,10 +103,10 @@
       <p>
         This Physics Question Bank is still being updated. Some answers may not be fully verified.
         If you spot an error or have suggestions, please reach out!
-        <br><br><strong>Recent Updates:</strong>
+        <br><br><strong>Recent Updates (5/11/25):</strong>
       </p>
-      <ul><li>✅ Added questions up till 2.2.4</li></ul>
-      <ul><li>✅ Added MCQ questions up till day 13</li></ul>
+      <ul><li>✅ Added book questions up till 2.2.4</li></ul>
+      <ul><li>✅ Added All daily quiz MCQ questions including quiz</li></ul>
       <ul><li>Any options with "Random" in it will follow based on your random count in the form given</li></ul>
       <ul><li>To max out random, just see the total questions available on the right</li></ul>
 
@@ -212,7 +212,7 @@
       const all=allQuestions();
       totalCountEl.innerHTML = `
         <div style="margin-bottom:4px;">📘 Total book questions: ${all.length}</div>
-        <div>🧩 Total MCQ questions: 220</div>
+        <div>🧩 Total MCQ questions: 260</div>
       `;
 
 
@@ -323,12 +323,15 @@
       "Day 3":  "data/AY25_ACAM_M2_Day_3_PQ.csv",
       "Day 4":  "data/AY25_ACAM_M2_Day_4_PQ.csv",
       "Day 6":  "data/AY25_ACAM_M2_Day_6_PQ.csv",
+      "Day 5":  "data/AY25_ACAM_M2_Day_5_PQ.csv",
+      "Day 7":  "data/AY25_ACAM_M2_Day_7_PQ.csv",
       "Day 8":  "data/AY25_ACAM_M2_Day_8_PQ.csv",
       "Day 9":  "data/AY25_ACAM_M2_Day_9_PQ.csv",
       "Day 10": "data/AY25_ACAM_M2_Day_10_PQ.csv",
       "Day 11": "data/AY25_ACAM_M2_Day_11_PQ.csv",
       "Day 12": "data/AY25_ACAM_M2_Day_12_PQ.csv",
-      "Day 13": "data/AY25_ACAM_M2_Day_13_PQ.csv"
+      "Day 13": "data/AY25_ACAM_M2_Day_13_PQ.csv",
+      "Mock Quiz": "Mock_Test.csv"
     };
 
     function populateDays(){
