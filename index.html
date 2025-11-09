@@ -103,12 +103,19 @@
       <p>
         This Physics Question Bank is still being updated. Some answers may not be fully verified.
         If you spot an error or have suggestions, please reach out!
-        <br><br><strong>Recent Updates (5/11/25):</strong>
+        <br><br><strong>Recent Updates (9/11/25):</strong>
       </p>
       <ul><li>✅ Added book questions up till 2.2.4</li></ul>
-      <ul><li>✅ Added All daily quiz MCQ questions including quiz</li></ul>
+      <ul><li>✅ Added All daily quiz MCQ questions including Mock Tests</li></ul>
       <ul><li>Any options with "Random" in it will follow based on your random count in the form given</li></ul>
       <ul><li>To max out random, just see the total questions available on the right</li></ul>
+      <ul>
+        <li>Here's the link to the Google Drive:   
+          <a href="https://drive.google.com/drive/folders/1s8o_HwFEtwhBldXSDDuCHhtY6NBFOmCQ?usp=sharing" target="_blank">
+             M2 Physics Work Books
+          </a>
+        </li>
+      </ul>
 
 
     </div>
@@ -126,8 +133,12 @@
             </div>
             <div>
               <label for="numQuestions">Random Count</label><br />
-              <input type="number" id="numQuestions" min="1" value="10" />
+              <div class="num-wrap">
+                <input type="number" id="numQuestions" min="1" value="10" />
+                <button id="maxBtn" class="btn secondary" type="button" title="Set to maximum">Max</button>
+              </div>
             </div>
+
             <div>
               <label for="daySelect">Quiz Day</label><br />
               <select id="daySelect"><option value="">-- Choose a Day --</option></select>
@@ -191,6 +202,8 @@
     const hideAllAnsBtn = document.getElementById('hideAllAns');
     const totalCountEl  = document.getElementById('totalCount');
     const allRandomBtn  = document.getElementById('allRandomBtn');
+    const maxBtn = document.getElementById('maxBtn');
+
 
     const daySelect     = document.getElementById('daySelect');
     const startDayBtn   = document.getElementById('startDayBtn');
@@ -212,7 +225,7 @@
       const all=allQuestions();
       totalCountEl.innerHTML = `
         <div style="margin-bottom:4px;">📘 Total book questions: ${all.length}</div>
-        <div>🧩 Total MCQ questions: 260</div>
+        <div>🧩 Total MCQ questions: 367</div>
       `;
 
 
@@ -331,7 +344,12 @@
       "Day 11": "data/AY25_ACAM_M2_Day_11_PQ.csv",
       "Day 12": "data/AY25_ACAM_M2_Day_12_PQ.csv",
       "Day 13": "data/AY25_ACAM_M2_Day_13_PQ.csv",
-      "Mock Quiz": "data/Mock_Test.csv"
+      "Day 14": "data/AY25_ACAM_M2_Day_14_PQ.csv",
+      "Day 15": "data/AY25_ACAM_M2_Day_15_PQ.csv",
+      "Day 16": "data/AY25_ACAM_M2_Day_16_PQ.csv",
+      "Day 17": "data/AY25_ACAM_M2_Day_17_PQ.csv",
+      "Mock Test 1": "data/Mock_Test.csv",
+      "Mock Test 2": "data/Mock_Test_2.csv"
     };
 
     function populateDays(){
@@ -418,6 +436,12 @@
     randomBtn.addEventListener('click', showRandomN);
     allBtn.addEventListener('click', showAll);
     allRandomBtn.addEventListener('click', showAllRandom);
+    maxBtn.addEventListener('click', () => {
+      // set the input to its max value
+      const maxVal = Number(numInput.max) || 1;
+      numInput.value = 367;
+    });
+
 
     backBtn.addEventListener('click', goBack);
     showAllAnsBtn.addEventListener('click', showAllAnswers);
